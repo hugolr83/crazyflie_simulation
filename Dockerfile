@@ -61,3 +61,13 @@ RUN chmod +x /root/argos3/build_simulator/argos_post_install.sh &&\
 
 # Add dummy argument to force rebuild starting from that point
 ARG UPDATE_CODE=unknown
+
+WORKDIR /inf3995-simulation
+COPY . .
+
+RUN  cd /inf3995-simulation &&\
+    mkdir build &&\
+    cd build &&\
+    cmake .. && make && cd ..
+
+CMD ["argos3", "-c", "experiments/pdr_simulation.argos"]
