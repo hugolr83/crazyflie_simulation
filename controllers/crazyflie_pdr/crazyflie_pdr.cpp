@@ -8,13 +8,15 @@ using namespace argos;
 CrazyflieController::CrazyflieController() : 
    battery_(NULL), 
    distance_scanner_(NULL),
-   // speed_actuator_(NULL),
    position_actuator_(NULL),
    position_sensor_(NULL),
    tick_(0) {}
 
 void CrazyflieController::Init(TConfigurationNode& t_node) {
-   LOG << " INIT \n";
+
+   socket_port_ = DroneRegistry::DroneIdToPort.find(GetId())->second;
+   LOG << "Init Drone: " << GetId() << " with port : "<< socket_port_ << "\n";
+
 
    try {
       
@@ -22,9 +24,11 @@ void CrazyflieController::Init(TConfigurationNode& t_node) {
       battery_ = GetSensor<CCI_BatterySensor>("battery");
       position_actuator_ = GetActuator<CCI_QuadRotorPositionActuator>("quadrotor_position");
       position_sensor_ = GetSensor<CCI_PositioningSensor>("positioning");
-      // speed_actuator_ = GetSensor<CCI_QuadRotorSpeedActuator>("quadrotor_speed");
 
-
+      // Start socket server
+      socket_link_ = new  SocketLink(socket_port_);
+      socket_link_->Start();
+      
    }
    catch(CARGoSException& ex) {
       THROW_ARGOSEXCEPTION_NESTED("Error initializing the crazyflie sensing controller for robot \"" << GetId() << "\"", ex);
@@ -37,33 +41,44 @@ void CrazyflieController::Init(TConfigurationNode& t_node) {
 }
 
 void CrazyflieController::ControlStep() {
-   if (tick_ == 0) {
-      TakeOff();
-   }
    auto bat_reading = battery_->GetReading();
-   LOG << "battery reading " << bat_reading.AvailableCharge << "\n";
-   
-   // LOG << "Current position " << position_sensor_->GetReading().Position << "\n";
-   
+   Command command = socket_link_->GetCommand();
 
-   if (tick_ == 100) {
-      Land();
+   if (command) {
+      switch (command)
+      {
+      case Command::START_EXPLORATION:
+         LOG << "Drone " << GetId() << " taking off\n";
+         TakeOff();
+         break;
+      case Command::RETURN_TO_BASE:
+         LOG << "Drone " << GetId() << " landing\n";
+         Land();
+         break;
+      
+      default:
+         break;
+      }
+
    }
 
    tick_++;
    
-
-
 }
 
 void CrazyflieController::TakeOff() {
-   CVector3 vec = CVector3(0.0, 0.0, 2.0);
-   position_actuator_->SetAbsolutePosition(vec);
+   // CVector3 curr = position_sensor_->GetReading().Position;
+   // curr.SetZ(2.0);
+   // position_actuator_->SetAbsolutePosition(curr);
+   position_actuator_->SetRelativePosition(CVector3(2.0, 0.0, 0.0));
+
 }
 
 void CrazyflieController::Land() {
-   CVector3 vec = CVector3(0.0, 0.0, 0.0);
-   position_actuator_->SetAbsolutePosition(vec);
+   // CVector3 curr = position_sensor_->GetReading().Position;
+   // curr.SetZ(1.1);
+   position_actuator_->SetRelativePosition(CVector3(0.0, 0.0, 0.0));
+
 }
 
 REGISTER_CONTROLLER(CrazyflieController, "crazyflie_pdr_controller")

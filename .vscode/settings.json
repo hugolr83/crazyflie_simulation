@@ -1,0 +1,7 @@
+{
+    "clang-tidy.lintOnSave": true,
+    "files.associations": {
+        "system_error": "cpp",
+        "optional": "cpp"
+    },
+}

@@ -3,7 +3,11 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/asio-1.18.2/include/",
+                "${workspaceFolder}/socket_link/**",
+                "${workspaceFolder}/controllers/**"
+
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

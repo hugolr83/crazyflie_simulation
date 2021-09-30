@@ -1,20 +1,5 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.21.3)
 project(inf3995-simulation)
-
-if(APPLE)
-  option(ASAN "Use Clang Address Sanitizer in Debug builds")
-  if(ASAN)
-    # Add address sanitizer support for CLang
-    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address -fno-optimize-sibling-calls -fno-omit-frame-pointer")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address -fno-optimize-sibling-calls -fno-omit-frame-pointer")
-    set(CMAKE_MODULE_LINKER_FLAGS_DEBUG "${CMAKE_MODULE_LINKER_FLAGS_DEBUG} -fsanitize=address")
-    set(CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_MODULE_LINKER_FLAGS_DEBUG} -fsanitize=address")
-    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_MODULE_LINKER_FLAGS_DEBUG} -fsanitize=address")
-  endif(ASAN)
-endif(APPLE)
-
-# Deactivate RPATH for MacOSX
-set(CMAKE_MACOSX_RPATH 0)
 
 # Set the path where CMake will find additional scripts
 set(CMAKE_MODULE_PATH $ENV{CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
@@ -38,17 +23,24 @@ endif(GALIB_FOUND)
 # Find Lua
 find_package(Lua53 REQUIRED)
 
+if(NOT TARGET spdlog)
+    # Stand-alone build
+    find_package(spdlog REQUIRED)
+endif()
+
+
 # Set ARGoS include dir
 include_directories(${CMAKE_SOURCE_DIR} ${ARGOS_INCLUDE_DIRS} ${LUA_INCLUDE_DIR})
-
 # Set ARGoS link dir
 link_directories(${ARGOS_LIBRARY_DIRS})
 
+# asio
+include_directories(./asio-1.18.2/include)
+
+
 # Descend into the controllers directory
 add_subdirectory(controllers)
+add_subdirectory(socket_link)
 
-# Descend into the loop_functions directory
-# add_subdirectory(loop_functions)
 
-# Descend into the embedding directory
-# add_subdirectory(embedding)
+
