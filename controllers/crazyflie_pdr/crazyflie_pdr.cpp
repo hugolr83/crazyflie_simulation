@@ -70,14 +70,14 @@ void CrazyflieController::TakeOff() {
    // CVector3 curr = position_sensor_->GetReading().Position;
    // curr.SetZ(2.0);
    // position_actuator_->SetAbsolutePosition(curr);
-   position_actuator_->SetRelativePosition(CVector3(2.0, 0.0, 0.0));
+   position_actuator_->SetAbsolutePosition(CVector3(0.25, 0.25, 2.0));
 
 }
 
 void CrazyflieController::Land() {
    // CVector3 curr = position_sensor_->GetReading().Position;
    // curr.SetZ(1.1);
-   position_actuator_->SetRelativePosition(CVector3(0.0, 0.0, 0.0));
+   position_actuator_->SetAbsolutePosition(CVector3(1.25, 1.25, 2.0));
 
 }
 
