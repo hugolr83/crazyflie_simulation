@@ -1,0 +1,91 @@
+<?xml version="1.0" ?>
+<argos-configuration>
+    <framework>
+        <!-- <system thread="0"/> -->
+        <experiment length="0" ticks_per_second="10" random_seed="0000" />
+        <profiling file="profile.txt" format="human_readable" truncate_file="true" />
+    </framework>
+
+    <controllers>
+        <!-- This tag is important to have the same name as the cpp file i.e <file_name>_controller -->
+        <crazyflie_pdr_controller id="cf_controller" library="build/controllers/crazyflie_pdr/libcrazyflie_pdr">
+            <actuators>
+                <!-- act like motors -->
+                <quadrotor_position implementation="default" />
+                <!-- <quadrotor_speed implementation="default" /> -->
+                
+            </actuators>
+            <sensors>
+                <!-- multi ranger deck -->
+                <crazyflie_distance_scanner implementation="rot_z_only" show_rays="true" />
+                <battery implementation="default"/>
+                <positioning implementation="default"/>
+                
+            </sensors>
+            <params></params>
+        </crazyflie_pdr_controller>
+    </controllers>
+
+    <arena size="4, 4, 1" center="0,0,0.5" positional_grid_size="4, 4, 1">
+        <box id="wall_north" size="4,0.1,0.5" movable="false">
+            <body position="0,2,0" orientation="0,0,0" />
+        </box>
+        <box id="wall_south" size="4,0.1,0.5" movable="false">
+            <body position="0,-2,0" orientation="0,0,0" />
+        </box>
+        <box id="wall_east" size="0.1,4,0.5" movable="false">
+            <body position="2,0,0" orientation="0,0,0" />
+        </box>
+        <box id="wall_west" size="0.1,4,0.5" movable="false">
+            <body position="-2,0,0" orientation="0,0,0" />
+        </box> 
+
+        <crazyflie id="cf_0">
+            <body position="-0.25,0,0" orientation="0,0,0" />
+            <controller config="cf_controller" />
+            <battery model="time_motion" time_factor="1e-5" pos_factor="1e-3" orient_factor="1e-3" />
+        </crazyflie>
+
+        <crazyflie id="cf_1">
+            <body position="0.25,0,0" orientation="0,0,0" />
+            <controller config="cf_controller" />
+            <battery model="time_motion" time_factor="1e-5" pos_factor="1e-3" orient_factor="1e-3" />
+        </crazyflie>
+
+        <!-- random positioning -->
+        <!-- <distribute>
+            <position method="uniform" min="-2,-2,0" max="2,,0" />
+            <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />
+            <entity quantity="2" max_trials="10">
+            <crazyflie id="crazyflie">
+                <controller config="cf_controller" />
+                <battery model="time_motion" time_factor="1e-5" pos_factor="1e-3" orient_factor="1e-3" />
+            </crazyflie>
+            </entity>
+        </distribute>    -->
+    </arena>
+
+    <physics_engines>
+        <!-- <dynamics2d id="dyn2d" /> -->
+        <!-- Point mass 3d is need for the crazyflie -->
+        <pointmass3d id="pm3d" /> 
+    </physics_engines>
+
+    <media>
+    </media>
+
+    <visualization>
+        <qt-opengl>
+            <camera>
+                <placements>
+                    <placement index="0" position="0,0,2"
+                            look_at="0,0,0" up="-1,0,0" 
+                            lens_focal_length="20" />
+                </placements>
+            </camera>
+        </qt-opengl>
+
+    </visualization>
+    <!-- loop_functions -->
+
+</argos-configuration>
