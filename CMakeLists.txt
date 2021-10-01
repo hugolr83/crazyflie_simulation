@@ -28,14 +28,10 @@ if(NOT TARGET spdlog)
     find_package(spdlog REQUIRED)
 endif()
 
-
 # Set ARGoS include dir
 include_directories(${CMAKE_SOURCE_DIR} ${ARGOS_INCLUDE_DIRS} ${LUA_INCLUDE_DIR})
 # Set ARGoS link dir
 link_directories(${ARGOS_LIBRARY_DIRS})
-
-# asio
-include_directories(./asio-1.18.2/include)
 
 
 # Descend into the controllers directory

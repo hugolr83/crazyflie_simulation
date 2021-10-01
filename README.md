@@ -22,4 +22,5 @@ This is temporary for now. Need to have X on your machine
 
         mkdir build
         cmake ..
+        make
         cd ../ && argos3 -c experiments/pdr_simulation.argos

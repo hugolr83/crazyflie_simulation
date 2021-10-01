@@ -8,6 +8,7 @@
                 "${workspaceFolder}/socket_link/**",
                 "${workspaceFolder}/controllers/**"
 
+
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

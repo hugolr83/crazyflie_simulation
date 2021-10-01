@@ -4,4 +4,6 @@
         "system_error": "cpp",
         "optional": "cpp"
     },
+    "editor.defaultFormatter": "xaver.clang-format",
+    "editor.formatOnSave": true,
 }
