@@ -43,10 +43,11 @@ void CrazyflieController::ControlStep() {
     switch (command) {
     case Command::START_EXPLORATION:
       LOG << "Drone " << GetId() << " taking off\n";
-      TakeOff();
+      state_ = State::NAVIGATING;
       break;
     case Command::LAND:
       LOG << "Drone " << GetId() << " landing\n";
+      state_ = State::LANDING;
       Land();
       break;
 
@@ -55,18 +56,29 @@ void CrazyflieController::ControlStep() {
     }
   }
 
+  if (state_ == State::NAVIGATING) {
+    TakeOff(tick_);
+  }
+
   tick_++;
 }
 
-void CrazyflieController::TakeOff() {
+void CrazyflieController::TakeOff(unsigned int tick) {
+
+  double x = 2.0 * sin(tick % 100);
+  double y = 2.0 * cos(tick % 100);
+
   CVector3 curr = position_sensor_->GetReading().Position;
-  curr.SetZ(2.0);
+  curr.Set(x, y, 2.0);
+
   position_actuator_->SetAbsolutePosition(curr);
 }
 
 void CrazyflieController::Land() {
   CVector3 curr = position_sensor_->GetReading().Position;
-  curr.Set(curr.GetX() + 0.10, curr.GetY() + 0.10, 0.1);
+  curr.Set(curr.GetX(), curr.GetY(), 0.0);
+
+  LOG << "landing at" << curr << "\n";
   position_actuator_->SetAbsolutePosition(curr);
 }
 

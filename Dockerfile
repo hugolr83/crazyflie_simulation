@@ -1,6 +1,6 @@
-FROM ubuntu:18.04
-LABEL Maintainer="Pierre-Yves Lajoie <pierre-yves.lajoie@polymtl.ca>"
-LABEL argos-example.version="0.1"
+FROM ubuntu:latest
+
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Install common dependencies
 RUN apt-get update && apt-get install -y \
@@ -30,10 +30,9 @@ RUN apt-get update && apt-get install -y \
     lua5.3 \
     libboost-filesystem-dev \
     cmake \
+    libasio-dev \
+    libspdlog-dev \
     && rm -rf /var/lib/apt/lists/*
-
-# Add dummy argument to force rebuild starting from that point
-ARG UPDATE_ARGOS=unknown
 
 # Install Argos from source
 RUN cd /root/ &&\
@@ -55,19 +54,12 @@ RUN chmod +x /root/argos3/build_simulator/argos_post_install.sh &&\
     ./root/argos3/build_simulator/argos_post_install.sh &&\
     echo "\nsource /root/argos3/build_simulator/setup_env.sh\n" >> /.bashrc
 
-#################################
-#          YOUR CODE            #
-#################################
-
-# Add dummy argument to force rebuild starting from that point
-ARG UPDATE_CODE=unknown
-
 WORKDIR /inf3995-simulation
 COPY . .
 
 RUN  cd /inf3995-simulation &&\
     mkdir build &&\
     cd build &&\
-    cmake .. && make && cd ..
+    cmake .. && make -j $(nproc)
 
 CMD ["argos3", "-c", "experiments/pdr_simulation.argos"]

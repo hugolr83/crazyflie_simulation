@@ -1,8 +1,10 @@
 #ifndef CRAZYFLIE_CONTROLLER_H
 #define CRAZYFLIE_CONTROLLER_H
 
+#include "command.h"
 #include "drone_registry.h"
 #include "socket_link.h"
+#include "state.h"
 #include <argos3/core/control_interface/ci_controller.h>
 #include <argos3/core/utility/configuration/argos_configuration.h>
 #include <argos3/plugins/robots/crazyflie/control_interface/ci_crazyflie_distance_scanner_sensor.h>
@@ -27,7 +29,7 @@ public:
 
   virtual void Destroy() {}
 
-  void TakeOff();
+  void TakeOff(unsigned int tick);
 
   void Land();
 
@@ -39,6 +41,7 @@ private:
   SocketLink *socket_link_;
   unsigned long tick_;
   unsigned int socket_port_;
+  State state_;
 
   // CCI_QuadRotorSpeedActuator* speed_actuator_;
 };

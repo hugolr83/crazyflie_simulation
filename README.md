@@ -14,7 +14,7 @@ This is temporary for now. Need to have X on your machine
         
         xhost + 
         
-        docker run -d --net=host --priviliged -e DISPLAY=:0 -v /tmp/.X11-unix:/tmp/.X11-unix
+        docker run -d --net=host --privileged -e DISPLAY=:0 -v /tmp/.X11-unix:/tmp/.X11-unix <image_name>
 
 
 ## Development

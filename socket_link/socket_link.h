@@ -4,7 +4,6 @@
 #define ASIO_STANDALONE
 #include "asio.hpp"
 #include "command.h"
-#include <iostream>
 #include <memory>
 #include <optional>
 #include <queue>
