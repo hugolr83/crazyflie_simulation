@@ -1,0 +1,21 @@
+{
+  "branches": "main",
+  "repositoryUrl": "https://gitlab.com/polytechnique-montr-al/inf3995/20213/equipe-100/inf3995-simulation.git",
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/npm",
+      {
+        "npmPublish": false
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "message": "chore(release): ${nextRelease.version}"
+      }
+    ],
+    "@semantic-release/gitlab"
+  ]
+}
