@@ -1,0 +1,65 @@
+.only: &main_and_mr
+  refs:
+    - main
+    - merge_requests
+
+.release: &release
+  variables:
+    - '$CI_COMMIT_AUTHOR == "Alfred Pennyworth <alfred.pennyworth@polymtl.ca>" && $CI_COMMIT_BRANCH == "main"'
+
+stages:
+  - build
+  - release
+  - export_version
+  - build_and_push_simulation_image
+
+build:
+  stage: build
+  image: registry.gitlab.com/polytechnique-montr-al/inf3995/20213/equipe-100/inf3995-simulation/argos:0.0.1
+  only: *main_and_mr
+  except: *release
+  script:
+    - mkdir build
+    - cd build
+    - cmake ..
+    - make
+
+release:
+  stage: release
+  image: registry.gitlab.com/polytechnique-montr-al/inf3995/20213/equipe-100/inf3995-client/release:0.0.1
+  only:
+    refs:
+      - main
+  except: *release
+  variables:
+    GIT_AUTHOR_NAME: Alfred Pennyworth
+    GIT_AUTHOR_EMAIL: alfred.pennyworth@polymtl.ca
+    GIT_COMMITTER_NAME: Alfred Pennyworth
+    GIT_COMMITTER_EMAIL: alfred.pennyworth@polymtl.ca
+    GITLAB_TOKEN: $SEMANTIC_RELEASE_TOKEN
+  script:
+    - npx semantic-release
+
+export_version:
+  stage: export_version
+  image: node:lts-bullseye-slim
+  only: *release
+  script:
+    - echo "SIMULATION_VERSION=$(node -pe "require('./package.json').version")" >> export_version.env
+  artifacts:
+    reports:
+      dotenv: export_version.env
+
+build_and_push_simulation_image:
+  stage: build_and_push_simulation_image
+  image: docker:latest
+  only: *release
+  services:
+    - docker:dind
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE/simulation:$SIMULATION_VERSION
+  before_script:
+    - echo $CI_REGISTRY_PASSWORD | docker login $CI_REGISTRY --username $CI_REGISTRY_USER --password-stdin
+  script:
+    - docker build -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
