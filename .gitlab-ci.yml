@@ -38,6 +38,7 @@ release:
     GIT_COMMITTER_EMAIL: alfred.pennyworth@polymtl.ca
     GITLAB_TOKEN: $SEMANTIC_RELEASE_TOKEN
   script:
+    - npm ci
     - npx semantic-release
 
 export_version:
