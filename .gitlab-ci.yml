@@ -12,6 +12,7 @@ stages:
   - release
   - export_version
   - build_and_push_simulation_image
+  - update_docker_image_tag
 
 build:
   stage: build
@@ -64,3 +65,20 @@ build_and_push_simulation_image:
   script:
     - docker build -t $IMAGE_TAG .
     - docker push $IMAGE_TAG
+    - echo "SIMULATION_IMAGE_TAG=$IMAGE_TAG" >> build.env
+  artifacts:
+    reports:
+      dotenv: build.env
+
+update_docker_image_tag:
+  stage: update_docker_image_tag
+  image: wtrep/update-tag:0.0.1
+  variables:
+    REPO_URL: https://oauth2:$IMAGE_TAG_TOKEN@gitlab.com/polytechnique-montr-al/inf3995/20213/equipe-100/inf3995-principal.git
+  script:
+    - git config --global user.name "Alfred Pennyworth"
+    - git config --global user.email "alfred.pennyworth@polymtl.ca"
+    - update-tag --docker-image $SIMULATION_IMAGE_TAG --repo-url $REPO_URL
+  only: *release
+  dependencies:
+    - build_and_push_simulation_image
