@@ -58,21 +58,26 @@ void SocketLink::StartReadCommand() {
                               StartReadCommand();
                             }
                           });
+                          
 }
 
 void SocketLink::SendStatus(Status status) {
 
   json json_status = {
-      {"kalman_state_x", status.kalman_state_x},
-      {"kalman_state_y", status.kalman_state_y},
-      {"kalman_state_z", status.kalman_state_z},
-      {"drone_battery_level", status.drone_battery_level},
-      {"range_front", status.range_front},
-      {"range_back", status.range_back},
-      {"range_left", status.range_left},
-      {"range_right", status.range_right},
-      {"state_estimate_yaw", status.yaw},
-      {"drone_state", status.drone_state},
+      {"timestamp", std::time(nullptr)},
+      {"kalman.stateX", status.kalman_state_x},
+      {"kalman.stateY", status.kalman_state_y},
+      {"kalman.stateZ", status.kalman_state_z},
+      {"drone.batteryLevel", status.drone_battery_level},
+      {"range.front", status.range_front},
+      {"range.back", status.range_back},
+      {"range.left", status.range_left},
+      {"range.right", status.range_right},
+      {"stateEstimate.yaw", status.yaw},
+      {"drone.state", status.drone_state},
+      {"range.up", 0},
+      {"range.zrange", 0},
+
 
   };
 
@@ -80,6 +85,7 @@ void SocketLink::SendStatus(Status status) {
   // line
   std::string data = json_status.dump() + "\n";
 
+  spdlog::info("State {}", data );
   socket_.async_send(asio::buffer(data.data(), data.size()),
                      [this](std::error_code ec, std::size_t length) {
                        if (ec) {
