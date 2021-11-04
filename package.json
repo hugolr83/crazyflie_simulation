@@ -1,6 +1,6 @@
 {
   "name": "simulation",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "devDependencies": {
     "@semantic-release/git": "^10.0.0",
     "@semantic-release/gitlab": "^7.0.3",
