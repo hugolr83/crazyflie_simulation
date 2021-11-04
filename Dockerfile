@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/polytechnique-montr-al/inf3995/20213/equipe-100/inf3995-simulation/argos:1.0.1
+FROM registry.gitlab.com/polytechnique-montr-al/inf3995/20213/equipe-100/inf3995-simulation/argos:pdr
 
 # Configuration for the nvidia container runtime
 ENV NVIDIA_VISIBLE_DEVICES all
@@ -11,7 +11,7 @@ COPY CMakeLists.txt ./
 
 # Compile the simulation
 RUN  cd /inf3995-simulation && \ 
-    mkdir build && \
+    mkdir -p build && \
     cd build && \
     cmake .. && make -j $(nproc)
 
