@@ -85,7 +85,6 @@ void SocketLink::SendStatus(Status status) {
   // line
   std::string data = json_status.dump() + "\n";
 
-  spdlog::info("State {}", data );
   socket_.async_send(asio::buffer(data.data(), data.size()),
                      [this](std::error_code ec, std::size_t length) {
                        if (ec) {
