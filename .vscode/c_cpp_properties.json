@@ -5,8 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/asio-1.18.2/include/",
-                "${workspaceFolder}/socket_link/**",
-                "${workspaceFolder}/controllers/**"
+                "${workspaceFolder}/src/**"
 
 
             ],
@@ -16,7 +15,21 @@
             "cppStandard": "gnu++17",
             "intelliSenseMode": "linux-gcc-x64",
             "configurationProvider": "ms-vscode.cmake-tools"
-        }
+        },
+        {
+            "name": "Mac",
+            "includePath": ["${workspaceFolder}/**",
+                "${workspaceFolder}/asio-1.18.2/include/",
+                "${workspaceFolder}/src/**"],
+            "defines": [],
+            "macFrameworkPath": [
+              "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"
+            ],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+          }
     ],
     "version": 4
 }

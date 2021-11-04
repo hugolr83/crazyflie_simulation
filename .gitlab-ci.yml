@@ -16,7 +16,7 @@ stages:
 
 build:
   stage: build
-  image: registry.gitlab.com/polytechnique-montr-al/inf3995/20213/equipe-100/inf3995-simulation/argos:0.0.1
+  image: registry.gitlab.com/polytechnique-montr-al/inf3995/20213/equipe-100/inf3995-simulation/argos:1.0.0
   only: *main_and_mr
   except: *release
   script:
