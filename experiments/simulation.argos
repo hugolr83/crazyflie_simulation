@@ -8,7 +8,7 @@
 
     <controllers>
         <!-- This tag is important to have the same name as the cpp file i.e <file_name>_controller -->
-        <crazyflie_pdr_controller id="cf_controller" library="build/controllers/crazyflie_pdr/libcrazyflie_pdr">
+        <crazyflie_controller id="cf_controller" library="build/src/libcrazyflie_controller">
             <actuators>
                 <!-- act like motors -->
                 <quadrotor_position implementation="default" />
@@ -23,46 +23,57 @@
                 
             </sensors>
             <params></params>
-        </crazyflie_pdr_controller>
+        </crazyflie_controller>
     </controllers>
 
-    <arena size="4, 4, 1" center="0,0,0.5" positional_grid_size="4, 4, 1">
-        <box id="wall_north" size="4,0.1,0.5" movable="false">
+    <arena size="4, 4, 1" center="0,0,0.5">
+        <box id="wall_north" size="4,0.1,1.5" movable="false">
             <body position="0,2,0" orientation="0,0,0" />
         </box>
-        <box id="wall_south" size="4,0.1,0.5" movable="false">
+        <box id="wall_south" size="4,0.1,1.5" movable="false">
             <body position="0,-2,0" orientation="0,0,0" />
         </box>
-        <box id="wall_east" size="0.1,4,0.5" movable="false">
+        <box id="wall_east" size="0.1,4,1.5" movable="false">
             <body position="2,0,0" orientation="0,0,0" />
         </box>
-        <box id="wall_west" size="0.1,4,0.5" movable="false">
+        <box id="wall_west" size="0.1,4,1.5" movable="false">
             <body position="-2,0,0" orientation="0,0,0" />
         </box> 
 
         <crazyflie id="cf_0">
             <body position="-0.25,0,0" orientation="0,0,0" />
             <controller config="cf_controller" />
-            <battery model="time_motion" time_factor="1e-5" pos_factor="1e-3" orient_factor="1e-3" />
+            <battery model="time_motion" delta="6e-4" pos_delta="6e-4" orient_delta="6e-4" />
         </crazyflie>
 
         <crazyflie id="cf_1">
             <body position="0.25,0,0" orientation="0,0,0" />
             <controller config="cf_controller" />
-            <battery model="time_motion" time_factor="1e-5" pos_factor="1e-3" orient_factor="1e-3" />
+            <battery model="time_motion"  delta="10e-4" pos_delta="10e-4" orient_delta="10e-4"/>
         </crazyflie>
 
-        <!-- random positioning -->
-        <!-- <distribute>
-            <position method="uniform" min="-2,-2,0" max="2,,0" />
-            <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />
-            <entity quantity="2" max_trials="10">
-            <crazyflie id="crazyflie">
-                <controller config="cf_controller" />
-                <battery model="time_motion" time_factor="1e-5" pos_factor="1e-3" orient_factor="1e-3" />
-            </crazyflie>
+
+        <distribute>
+            <position method="uniform" min="-1.5,-1.5,0" max="0, -1.5, 0" />
+            <orientation method="uniform" min="0,0,0" max="360,0,0" />
+            <entity quantity="1" max_trials="1000">
+                    <box id="w1" size="0.5, 0.5, 1.5" movable="false" />
             </entity>
-        </distribute>    -->
+        </distribute>
+        <distribute>
+            <position method="uniform" min="0, 0, 0" max="1.5, 1.5, 0" />
+            <orientation method="uniform" min="0,0,0" max="360,0,0" />
+            <entity quantity="1" max_trials="1000">
+                <box id="w2" size="0.5,1, 1.5" movable="false" />
+            </entity>
+        </distribute>
+        <distribute>
+            <position method="uniform" min="-1, -1, 0" max="-0.5, -0.5, 0" />
+            <orientation method="constant" values="0,0,0" />
+            <entity quantity="1" max_trials="1000">
+                <cylinder id="cylinder" height="1.5" radius="0.3" movable="false" />
+            </entity>
+        </distribute>
     </arena>
 
     <physics_engines>

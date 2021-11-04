@@ -5,6 +5,7 @@
 #include "drone_registry.h"
 #include "socket_link.h"
 #include "state.h"
+#include "state_machine.h"
 #include <argos3/core/control_interface/ci_controller.h>
 #include <argos3/core/utility/configuration/argos_configuration.h>
 #include <argos3/plugins/robots/crazyflie/control_interface/ci_crazyflie_distance_scanner_sensor.h>
@@ -12,6 +13,8 @@
 #include <argos3/plugins/robots/generic/control_interface/ci_positioning_sensor.h>
 #include <argos3/plugins/robots/generic/control_interface/ci_quadrotor_position_actuator.h>
 #include <argos3/plugins/robots/generic/control_interface/ci_quadrotor_speed_actuator.h>
+#include <random>
+#include <stdexcept>
 
 using namespace argos;
 
@@ -41,9 +44,14 @@ private:
   SocketLink *socket_link_;
   unsigned long tick_;
   unsigned int socket_port_;
-  State state_;
-
-  // CCI_QuadRotorSpeedActuator* speed_actuator_;
+  StateMachine state_machine;
+  CCI_BatterySensor::SReading battery_reading;
+  CVector3 current_position;
+  CQuaternion current_orientation;
+  CVector3 target;
+  std::uniform_real_distribution<double> dist;
+  std::random_device rd;
+  Status EncodeStatus(RangeData range_data);
 };
 
 #endif

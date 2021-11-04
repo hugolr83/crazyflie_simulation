@@ -24,3 +24,11 @@ This is temporary for now. Need to have X on your machine
         cmake ..
         make
         cd ../ && argos3 -c experiments/pdr_simulation.argos
+
+### Debug
+
+Launch simulation with `run_simulation.sh` and take note of the PID output
+
+Attach gdb to the process with `gdb -p PID` *You might need to run sudo with this command (figure out why)
+
+Set breakpoint and start simulation

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(inf3995-simulation)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 # Set the path where CMake will find additional scripts
 set(CMAKE_MODULE_PATH $ENV{CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
 
@@ -14,8 +16,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ARGOS_PREFIX}/share/argos3/cmake)
 # code that depends on Qt and OpenGL
 include(ARGoSCheckQTOpenGL)
 
-# Find Lua
-find_package(Lua53 REQUIRED)
+# Find Lua # Not needed
+find_package(Lua53 QUIET)
 
 if(NOT TARGET spdlog)
     # Stand-alone build
@@ -27,7 +29,9 @@ include_directories(${CMAKE_SOURCE_DIR} ${ARGOS_INCLUDE_DIRS} ${LUA_INCLUDE_DIR}
 # Set ARGoS link dir
 link_directories(${ARGOS_LIBRARY_DIRS})
 
+# TODO Change hardcoded path
+include_directories(./asio-1.18.2/include)
+
 # Descend into the controllers directory
-add_subdirectory(controllers)
-add_subdirectory(socket_link)
+add_subdirectory(src)
 
