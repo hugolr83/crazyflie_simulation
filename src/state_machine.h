@@ -6,9 +6,9 @@
 #include <spdlog/spdlog.h>
 
 #define ALTITUDE 1.0
-#define MAX_SPEED 0.5
+#define MAX_SPEED 0.1
 #define MAX_FORCE 0.4
-#define DISTANCE_WALL_THRESHOLD 100.0
+#define DISTANCE_WALL_THRESHOLD 30.0
 #define MAX_DISTANCE 40.0
 #define RETURN_BASE_THRESHOLD 0.2
 
@@ -46,6 +46,8 @@ private:
   argos::CVector3 Update(argos::CVector3 desired_velocity);
   argos::CVector3 current_velocity;
   argos::CVector3 initial_position;
+  argos::CVector3 landing_position;
+  bool is_landing;
 };
 
 #endif

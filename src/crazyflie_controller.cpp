@@ -106,8 +106,7 @@ void CrazyflieController::ControlStep() {
   Action action = state_machine.DoState(current_position, target, range_data);
 
   if (action.is_absolute) {
-
-    position_actuator_->SetAbsolutePosition(CVector3(0.25, 0, 0));
+    position_actuator_->SetAbsolutePosition(action.next_position);
   } else {
 
     position_actuator_->SetRelativePosition(action.next_position);

@@ -1,7 +1,8 @@
 #include "state_machine.h"
 
 StateMachine::StateMachine()
-    : state(State::NOT_READY), current_velocity(0.0, 0.0, 0.0) {
+    : state(State::NOT_READY), current_velocity(0.0, 0.0, 0.0),
+      is_landing(false) {
   spdlog::info("State machine ctor\n");
 }
 
@@ -30,8 +31,19 @@ Action StateMachine::DoState(argos::CVector3 position, argos::CVector3 target,
     break;
 
   case LANDING:
-    action.next_position.SetZ(0.0);
+    if (!is_landing) {
+      landing_position = position;
+      landing_position.SetZ(0.0);
+      is_landing = true;
+    }
+
+    action.next_position = landing_position;
+
     action.is_absolute = true;
+
+    if (position.GetZ() == 0) {
+      state = READY;
+    }
     break;
 
   case HOVERING:
@@ -55,7 +67,6 @@ Action StateMachine::DoState(argos::CVector3 position, argos::CVector3 target,
         (position.GetY() + RETURN_BASE_THRESHOLD <= initial_position.GetY() &&
          position.GetY() - RETURN_BASE_THRESHOLD >= initial_position.GetY())) {
 
-      spdlog::info("returning to base done !!!");
       action.next_position.SetZ(-ALTITUDE);
       state = READY;
     }
@@ -113,10 +124,6 @@ argos::CVector3 StateMachine::Update(argos::CVector3 desired_velocity) {
   current_velocity += steering_force;
   current_velocity = Limit(current_velocity, MAX_SPEED);
   return current_velocity;
-  //   current_position += current_velocity;
-  //   position_actuator_->SetAbsolutePosition(
-  //       CVector3(current_position.GetX(), current_position.GetY(),
-  //       ALTITUDE));
 }
 
 argos::CVector3 StateMachine::Seek(argos::CVector3 desired_velocity) {
