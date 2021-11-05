@@ -5,16 +5,18 @@
 using namespace argos;
 
 #define TICK_PULSE 10
+#define MM_FACTOR 10.0
 
 CrazyflieController::CrazyflieController()
     : battery_(NULL), distance_scanner_(NULL), position_sensor_(NULL), tick_(0),
-      position_actuator_(NULL), target(0.0, 0.0, 0.0), dist(-2.0, 2.0), rd() {}
+      position_actuator_(NULL), target(0.0, 0.0, 0.0), rd() {}
 
 void CrazyflieController::Init(TConfigurationNode &t_node) {
   socket_port_ = DroneRegistry::DroneIdToPort.find(GetId())->second;
   state_machine.SetState(State::NOT_READY);
 
   spdlog::info("Init Drone: {} with port {} ", GetId(), socket_port_);
+  dist = std::uniform_real_distribution<double>(-2.0, 2.0);
 
   try {
 
@@ -134,10 +136,10 @@ Status CrazyflieController::EncodeStatus(RangeData range_data) {
       current_position.GetY(), // kalman_y
       current_position.GetZ(), // kalman_z
       static_cast<int>(battery_reading.AvailableCharge * 100),
-      range_data.d4, // range front
-      range_data.d2, // range back
-      range_data.d1, // range left
-      range_data.d3, // range right
+      range_data.d4 * MM_FACTOR, // range front
+      range_data.d2 * MM_FACTOR, // range back
+      range_data.d1 * MM_FACTOR, // range left
+      range_data.d3 * MM_FACTOR, // range right
       z_angle.GetValue(),
       static_cast<int>(state_machine.GetState())};
 
