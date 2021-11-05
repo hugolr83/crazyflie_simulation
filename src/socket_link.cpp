@@ -78,8 +78,8 @@ void SocketLink::SendStatus(Status status) {
 
   };
 
-  // A \n termination symbol is needed for the asyncio client socket to read a
-  // line
+  // A \n termination symbol is needed for the asyncio client socket to read
+  // a line
   std::string data = json_status.dump() + "\n";
 
   socket_.async_send(asio::buffer(data.data(), data.size()),
