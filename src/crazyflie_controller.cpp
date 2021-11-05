@@ -60,7 +60,7 @@ void CrazyflieController::ControlStep() {
         (iter++)->second,
     };
   } else {
-    throw std::runtime_error( "Sensor invalid" );
+    throw std::runtime_error("Sensor invalid");
   }
 
   battery_reading = battery_->GetReading();
@@ -104,12 +104,10 @@ void CrazyflieController::ControlStep() {
     }
   }
 
-
   Action action = state_machine.DoState(current_position, target, range_data);
 
   if (action.is_absolute) {
-
-    position_actuator_->SetAbsolutePosition(CVector3(0.25, 0, 0));
+    position_actuator_->SetAbsolutePosition(action.next_position);
   } else {
 
     position_actuator_->SetRelativePosition(action.next_position);
@@ -132,18 +130,16 @@ Status CrazyflieController::EncodeStatus(RangeData range_data) {
   CRadians x_angle, y_angle, z_angle;
   current_orientation.ToEulerAngles(x_angle, y_angle, z_angle);
 
-  Status current_status = {
-      current_position.GetX(), // kalman_x
-      current_position.GetY(), // kalman_y
-      current_position.GetZ(), // kalman_z
-      battery_reading.AvailableCharge,
-      range_data.d4, // range front
-      range_data.d2, // range back
-      range_data.d1, // range left
-      range_data.d3, // range right
-      z_angle.GetValue(),
-      static_cast<int>(state_machine.GetState())
-  };
+  Status current_status = {current_position.GetX(), // kalman_x
+                           current_position.GetY(), // kalman_y
+                           current_position.GetZ(), // kalman_z
+                           battery_reading.AvailableCharge,
+                           range_data.d4, // range front
+                           range_data.d2, // range back
+                           range_data.d1, // range left
+                           range_data.d3, // range right
+                           z_angle.GetValue(),
+                           static_cast<int>(state_machine.GetState())};
 
   return current_status;
 }

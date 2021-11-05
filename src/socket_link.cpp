@@ -53,12 +53,10 @@ void SocketLink::StartReadCommand() {
   socket_.async_read_some(asio::buffer(data_, 1),
                           [this](std::error_code ec, std::size_t length) {
                             if (!ec) {
-                              spdlog::info("Read command ok!");
                               CommandQueue_.push((Command)data_[0]);
                               StartReadCommand();
                             }
                           });
-                          
 }
 
 void SocketLink::SendStatus(Status status) {
@@ -78,7 +76,6 @@ void SocketLink::SendStatus(Status status) {
       {"range.up", 0},
       {"range.zrange", 0},
 
-
   };
 
   // A \n termination symbol is needed for the asyncio client socket to read a
@@ -88,7 +85,8 @@ void SocketLink::SendStatus(Status status) {
   socket_.async_send(asio::buffer(data.data(), data.size()),
                      [this](std::error_code ec, std::size_t length) {
                        if (ec) {
-                          spdlog::error("Could not send state {} ", ec.message());
+                         spdlog::error("Could not send state {} ",
+                                       ec.message());
                        }
                      });
 }
