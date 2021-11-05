@@ -6,8 +6,8 @@
 #include <spdlog/spdlog.h>
 
 #define ALTITUDE 1.0
-#define MAX_SPEED 0.1
-#define MAX_FORCE 0.4
+#define MAX_SPEED 0.05
+#define MAX_FORCE 0.1
 #define DISTANCE_WALL_THRESHOLD 30.0
 #define RETURN_BASE_THRESHOLD 0.2
 
