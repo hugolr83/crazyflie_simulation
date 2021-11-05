@@ -87,8 +87,6 @@ void CrazyflieController::ControlStep() {
       state_machine.SetState(State::LANDING);
       break;
     case Command::START_EXPLORATION:
-      spdlog::info("start exp {}", command);
-
       state_machine.SetState(State::EXPLORATION);
       break;
     case Command::RETURN_TO_BASE: {
@@ -102,7 +100,6 @@ void CrazyflieController::ControlStep() {
     }
     default:
       // noop
-      // spdlog::info("got command default {}", command);
       break;
     }
   }
