@@ -19,7 +19,7 @@ struct Status {
   double kalman_state_x;
   double kalman_state_y;
   double kalman_state_z;
-  double drone_battery_level;
+  int drone_battery_level;
   double range_front;
   double range_back;
   double range_left;
