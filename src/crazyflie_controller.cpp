@@ -50,6 +50,7 @@ void CrazyflieController::ControlStep() {
   current_orientation = position_sensor_->GetReading().Orientation;
   auto distance_data = distance_scanner_->GetReadingsMap();
   battery_reading = battery_->GetReading();
+  battery_percentage = static_cast<int>(battery_reading.AvailableCharge * 100);
 
   auto iter = distance_data.begin();
   double d1, d2, d3, d4;
@@ -66,7 +67,7 @@ void CrazyflieController::ControlStep() {
     throw std::runtime_error("Sensor invalid");
   }
 
-  if (tick_ % (TICK_PULSE * 3) == 0) {
+  if (tick_ % (TICK_PULSE * 5) == 0) {
     // Random position to seek
     target = CVector3(dist(rd), dist(rd), 0.0);
   }
@@ -105,13 +106,15 @@ void CrazyflieController::ControlStep() {
     }
   }
 
-  Action action = state_machine.DoState(current_position, target, range_data);
+  Action action = state_machine.DoState(current_position, target, range_data,
+                                        battery_percentage);
 
-  if (action.is_absolute) {
-    position_actuator_->SetAbsolutePosition(action.next_position);
-  } else {
-
-    position_actuator_->SetRelativePosition(action.next_position);
+  if (state_machine.GetState() != State::READY) {
+    if (action.is_absolute) {
+      position_actuator_->SetAbsolutePosition(action.next_position);
+    } else {
+      position_actuator_->SetRelativePosition(action.next_position);
+    }
   }
 
   tick_++;
@@ -131,17 +134,16 @@ Status CrazyflieController::EncodeStatus(RangeData range_data) {
   CRadians x_angle, y_angle, z_angle;
   current_orientation.ToEulerAngles(x_angle, y_angle, z_angle);
 
-  Status current_status = {
-      current_position.GetX(), // kalman_x
-      current_position.GetY(), // kalman_y
-      current_position.GetZ(), // kalman_z
-      static_cast<int>(battery_reading.AvailableCharge * 100),
-      range_data.d4 * MM_FACTOR, // range front
-      range_data.d2 * MM_FACTOR, // range back
-      range_data.d1 * MM_FACTOR, // range left
-      range_data.d3 * MM_FACTOR, // range right
-      z_angle.GetValue(),
-      static_cast<int>(state_machine.GetState())};
+  Status current_status = {current_position.GetX(), // kalman_x
+                           current_position.GetY(), // kalman_y
+                           current_position.GetZ(), // kalman_z
+                           battery_percentage,
+                           range_data.d4 * MM_FACTOR, // range front
+                           range_data.d2 * MM_FACTOR, // range back
+                           range_data.d1 * MM_FACTOR, // range left
+                           range_data.d3 * MM_FACTOR, // range right
+                           z_angle.GetValue(),
+                           static_cast<int>(state_machine.GetState())};
 
   return current_status;
 }
