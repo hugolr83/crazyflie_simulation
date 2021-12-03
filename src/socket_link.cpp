@@ -85,8 +85,8 @@ void SocketLink::SendStatus(Status status) {
   socket_.async_send(asio::buffer(data.data(), data.size()),
                      [this](std::error_code ec, std::size_t length) {
                        if (ec) {
-                         spdlog::error("Could not send state {} ",
-                                       ec.message());
+                         //  spdlog::error("Could not send state {} ",
+                         //                ec.message());
                        }
                      });
 }

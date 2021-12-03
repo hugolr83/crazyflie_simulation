@@ -5,14 +5,16 @@
 #include <argos3/core/utility/math/vector3.h>
 #include <spdlog/spdlog.h>
 
-#define ALTITUDE 1.0
-#define MAX_SPEED 0.05
-#define MAX_FORCE 0.1
-#define DISTANCE_WALL_THRESHOLD 30.0
-#define RETURN_BASE_THRESHOLD 0.2
+constexpr double altitude = 0.2f;
+constexpr double max_speed = 0.05f;
+constexpr double max_force = 0.1f;
+constexpr double distance_wall_threshold = 30.0f;
+constexpr double return_base_threshold = 0.03f;
+constexpr int battery_level_threshold = 30;
 
 struct Action {
   argos::CVector3 next_position;
+  argos::CRadians yaw;
   bool is_absolute;
 };
 
@@ -41,7 +43,7 @@ private:
   argos::CVector3 Limit(argos::CVector3 vector, double max);
   argos::CVector3 GetDesiredVelocity(argos::CVector3 position,
                                      argos::CVector3 target,
-                                     RangeData range_data);
+                                     RangeData range_data, int battery_charge);
   argos::CVector3 Update(argos::CVector3 desired_velocity);
   argos::CVector3 current_velocity;
   argos::CVector3 initial_position;

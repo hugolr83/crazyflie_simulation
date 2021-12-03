@@ -66,7 +66,7 @@ void CrazyflieController::ControlStep() {
     throw std::runtime_error("Sensor invalid");
   }
 
-  if (tick_ % (TICK_PULSE * 3) == 0) {
+  if (tick_ % (TICK_PULSE * 5) == 0) {
     // Random position to seek
     target = CVector3(dist(rd), dist(rd), 0.0);
   }
@@ -105,13 +105,17 @@ void CrazyflieController::ControlStep() {
     }
   }
 
-  Action action = state_machine.DoState(current_position, target, range_data);
+  int current_battery = static_cast<int>(battery_reading.AvailableCharge * 100);
+  Action action = state_machine.DoState(current_position, target, range_data,
+                                        current_battery);
 
-  if (action.is_absolute) {
-    position_actuator_->SetAbsolutePosition(action.next_position);
-  } else {
-
-    position_actuator_->SetRelativePosition(action.next_position);
+  if (state_machine.GetState() != State::READY) {
+    if (action.is_absolute) {
+      position_actuator_->SetAbsolutePosition(action.next_position);
+    } else {
+      position_actuator_->SetRelativePosition(action.next_position);
+      // position_actuator_->SetAbsoluteYaw(action.yaw / 60.0f);
+    }
   }
 
   tick_++;
