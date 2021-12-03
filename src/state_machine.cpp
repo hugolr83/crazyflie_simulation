@@ -55,6 +55,11 @@ Action StateMachine::DoState(argos::CVector3 position, argos::CVector3 target,
     break;
 
   case EXPLORATION: {
+    if (battery_charge < battery_level_threshold) {
+      state = RETURNING_BASE;
+      break;
+    }
+
     if (position.GetZ() < altitude - 0.05) {
       action.is_absolute = true;
       action.next_position =
