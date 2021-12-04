@@ -124,24 +124,6 @@ void CrazyflieController::ControlStep() {
     }
   }
 
-  // TEST ORIENTATION YAW
-
-  // CRadians z_angle;
-  // CRadians y_angle;
-  // CRadians x_angle;
-  // current_orientation.ToEulerAngles(z_angle, y_angle, x_angle);
-  // CDegrees z_angle_deg = ToDegrees(z_angle);
-
-  // if (z_angle_deg.GetValue() < 45.0) {
-  //   spdlog::info("setttig");
-  //   position_actuator_->SetRelativeYaw(ToRadians(CDegrees(4)));
-  // } else {
-  //   double diff = CDegrees(45).GetValue() - z_angle_deg.GetValue();
-  //   position_actuator_->SetRelativeYaw(ToRadians(CDegrees(diff)));
-  // }
-
-  // spdlog::info("ori {}", z_angle_deg.GetValue());
-
   tick_++;
 }
 

@@ -8,7 +8,7 @@
 constexpr double altitude = 0.2f;
 constexpr double max_speed = 0.07f;
 constexpr double max_force = 0.1f;
-constexpr double distance_wall_threshold = 50.0f;
+constexpr double distance_wall_threshold = 40.0f;
 constexpr double return_base_threshold = 0.03f;
 constexpr int battery_level_threshold = 30;
 constexpr double land_level = 0.05;
