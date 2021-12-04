@@ -50,7 +50,8 @@ private:
   CQuaternion current_orientation;
   CVector3 target;
   int battery_percentage;
-  std::uniform_real_distribution<double> dist;
+  std::uniform_real_distribution<double> dist_x;
+  std::uniform_real_distribution<double> dist_y;
   std::random_device rd;
   Status EncodeStatus(RangeData range_data);
 };
