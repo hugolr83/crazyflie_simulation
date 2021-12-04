@@ -16,7 +16,14 @@ void CrazyflieController::Init(TConfigurationNode &t_node) {
   state_machine.SetState(State::NOT_READY);
 
   spdlog::info("Init Drone: {} with port {} ", GetId(), socket_port_);
-  dist = std::uniform_real_distribution<double>(-2.0, 2.0);
+
+  if (GetId() == DroneRegistry::drone_one) {
+    dist_y = std::uniform_real_distribution<double>(-2.0, 0.0);
+  } else {
+    dist_y = std::uniform_real_distribution<double>(0.0, 2.0);
+  }
+
+  dist_x = std::uniform_real_distribution<double>(-2.0, 2.0);
 
   try {
 
@@ -69,7 +76,7 @@ void CrazyflieController::ControlStep() {
 
   if (tick_ % (TICK_PULSE * 5) == 0) {
     // Random position to seek
-    target = CVector3(dist(rd), dist(rd), 0.0);
+    target = CVector3(dist_x(rd), dist_y(rd), 0.0);
   }
 
   // 1Hz pulse, 10 ticks/sec
@@ -132,7 +139,7 @@ Status CrazyflieController::EncodeStatus(RangeData range_data) {
   double yaw;
 
   CRadians x_angle, y_angle, z_angle;
-  current_orientation.ToEulerAngles(x_angle, y_angle, z_angle);
+  current_orientation.ToEulerAngles(z_angle, y_angle, x_angle);
 
   Status current_status = {current_position.GetX(), // kalman_x
                            current_position.GetY(), // kalman_y

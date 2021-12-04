@@ -6,9 +6,12 @@
 
 namespace DroneRegistry {
 
-std::unordered_map<std::string, unsigned int> DroneIdToPort = {{"cf_0", 3995},
-                                                               {"cf_1", 3996}};
+constexpr auto drone_one = "cf_0";
+constexpr auto drone_two = "cf_1";
 
-}
+std::unordered_map<std::string, unsigned int> DroneIdToPort = {
+    {drone_one, 3995}, {drone_two, 3996}};
+
+} // namespace DroneRegistry
 
 #endif
