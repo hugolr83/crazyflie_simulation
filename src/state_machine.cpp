@@ -84,6 +84,11 @@ Action StateMachine::DoState(argos::CVector3 position, argos::CVector3 target,
   } break;
 
   case RETURNING_BASE: {
+    if (battery_charge < battery_level_threshold) {
+      state = LANDING;
+      break;
+    }
+
     argos::CVector3 desired_velocity =
         GetDesiredVelocity(position, initial_position, range_data);
     action.next_position = Update(desired_velocity);
