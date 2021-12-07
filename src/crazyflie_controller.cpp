@@ -107,6 +107,12 @@ void CrazyflieController::ControlStep() {
       }
       break;
     }
+    case Command::SET_POSITION: {
+      DroneInitialConfig config = socket_link_->GetInitialConfig();
+      position_actuator_->SetAbsolutePosition(
+          CVector3(config.position.x, config.position.y, 0.0));
+      break;
+    }
     default:
       // noop
       break;

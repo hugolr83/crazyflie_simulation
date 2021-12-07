@@ -13,6 +13,7 @@
 #include <argos3/plugins/robots/generic/control_interface/ci_positioning_sensor.h>
 #include <argos3/plugins/robots/generic/control_interface/ci_quadrotor_position_actuator.h>
 #include <argos3/plugins/robots/generic/control_interface/ci_quadrotor_speed_actuator.h>
+#include <optional>
 #include <random>
 #include <stdexcept>
 
