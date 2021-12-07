@@ -1,5 +1,6 @@
 #include "socket_link.h"
 #include <cstdint>
+#include <iostream>
 #include <string>
 
 SocketLink::SocketLink(unsigned int port)
@@ -50,13 +51,30 @@ void SocketLink::WaitClientConnection() {
 }
 
 void SocketLink::StartReadCommand() {
-  socket_.async_read_some(asio::buffer(data_, 1),
-                          [this](std::error_code ec, std::size_t length) {
-                            if (!ec) {
-                              CommandQueue_.push((Command)data_[0]);
-                              StartReadCommand();
-                            }
-                          });
+  socket_.async_read_some(
+      asio::buffer(data_, 100), [this](std::error_code ec, std::size_t length) {
+        if (!ec) {
+
+          CommandQueue_.push((Command)data_[0]);
+
+          if ((Command)data_[0] == Command::SET_POSITION) {
+            auto confStr = std::string(&data_[sizeof(int)]);
+
+            auto posJson = json::parse(confStr);
+
+            Position position = {posJson["position"]["x"],
+                                 posJson["position"]["y"], 0.0};
+
+            Orientation orientation = {posJson["orientation"]["yaw"]};
+
+            DroneInitialConfig initial = {position, orientation};
+
+            ConfigQueue_.push(initial);
+          }
+
+          StartReadCommand();
+        }
+      });
 }
 
 void SocketLink::SendStatus(Status status) {
@@ -98,4 +116,10 @@ Command SocketLink::GetCommand() {
   Command comm = CommandQueue_.front();
   CommandQueue_.pop();
   return comm;
+}
+
+DroneInitialConfig SocketLink::GetInitialConfig() {
+  DroneInitialConfig init = ConfigQueue_.front();
+  ConfigQueue_.pop();
+  return init;
 }

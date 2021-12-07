@@ -8,12 +8,27 @@
 #include "state.h"
 #include <array>
 #include <memory>
-#include <optional>
 #include <queue>
 #include <spdlog/spdlog.h>
+#include <string>
 #include <thread>
 
 using json = nlohmann::json;
+
+struct Position {
+  double x;
+  double y;
+  double z;
+};
+
+struct Orientation {
+  double yaw;
+};
+
+struct DroneInitialConfig {
+  Position position;
+  Orientation orientation;
+};
 
 struct Status {
   double kalman_state_x;
@@ -37,8 +52,10 @@ public:
   void WaitClientConnection();
   void StartReadCommand();
   Command GetCommand();
+  DroneInitialConfig GetInitialConfig();
   void SendStatus(Status status);
   std::queue<Command> CommandQueue_;
+  std::queue<DroneInitialConfig> ConfigQueue_;
 
 private:
   asio::error_code ec;
